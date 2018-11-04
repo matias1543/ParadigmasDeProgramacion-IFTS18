@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h2>Productos más vendidos.</h2>
+<table class="table">
+    <thead>
+        {% for lista in tabla[:1] %}
+        <tr>
+            {% for dato in lista %}
+            <th>{{ dato }}</th>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </thead>
+    <tbody>
+    {% for lista in tabla[1:] %}
+        <tr>
+            {% for dato in lista %}
+            <td>{{ dato }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

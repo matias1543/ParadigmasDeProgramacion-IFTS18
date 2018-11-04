@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>Problema con el archivo CSV.</h1>
+<ul>
+    {% for item in lista %}
+        {% for dato in item %}
+            <li>{{ dato }}</li>
+        {% endfor %}
+    {% endfor %}
+</ul>
+{% endblock %}
