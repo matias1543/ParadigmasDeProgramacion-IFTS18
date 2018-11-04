@@ -82,18 +82,13 @@ def formBusquedaProducto():
     posicionDeCantidad = funciones.posicionDelDato('CANTIDAD')
     posicionDeCodigo = funciones.posicionDelDato('CODIGO')
     validaciones = funciones.validaciones(datosDeVentas, posicionDePrecio, posicionDeCantidad, posicionDeCodigo)
-
-
-    
     if len(validaciones):
         return render_template('errores/errores.html', lista=validaciones)
-    
     if formulario.validate_on_submit():
         datoIngresado = formulario.producto.data
         producto = datoIngresado.upper()
         posicionDelDato = funciones.posicionDelDato('PRODUCTO')
         listaDeProductos = funciones.buscarDatoEspecifico(producto, datosDeVentas, posicionDelDato)
-        
         return render_template('clientes-por-producto/formulario_buscar_producto.html', form=formulario, buscarProducto=producto, lista=listaDeProductos)
         
         if len(listaDeProductos):
