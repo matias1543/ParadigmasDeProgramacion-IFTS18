@@ -27,7 +27,7 @@ def posicionDelDato(titulo):
 	posicion = dato[0].index(titulo)
 	return posicion
 
-#Función que filtra la lista con un dato especifico y retorna una lista de ese dato filtrado.
+#Función que filtra la lista con un dato especifico y retorna una lista de los datos cercanos a ese filtro.
 def buscarDatoEspecifico(datoEspecifico, datosDeVenta, posicionDelDato):
     listaDatos = []
     for linea in datosDeVenta[1:]:
