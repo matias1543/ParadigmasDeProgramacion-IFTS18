@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="page-header">
+    <h2>Cargar Venta</h2>
+    {{ wtf.quick_form(form) }}
+</div>
+
+{% if mensaje %}
+    <h3>Datos ingresados exitosamente.</h3>
+    <p>Ver "Últimas Ventas" <a href="/listacompleta">Click Aqui</a></p>
+{% endif %}
+{% endblock %}

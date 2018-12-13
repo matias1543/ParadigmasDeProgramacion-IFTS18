@@ -6,7 +6,7 @@ from flask import Flask, render_template, redirect, url_for, flash, session
 from flask_bootstrap import Bootstrap
 # from flask_moment import Moment
 from flask_script import Manager
-from forms import ClienteForm, ProductoForm
+from forms import ClienteForm, ProductoForm, ingresarDatosForm
 
 app = Flask(__name__)
 manager = Manager(app)
@@ -32,7 +32,17 @@ def error_interno(e):
 
 @app.route('/listacompleta')
 def lista():
-    return render_template('lista_completa.html', ventas=funciones.lecturaDeVentas())
+    datosDeVentas = funciones.lecturaDeVentas()
+    if len(datosDeVentas) == 1:
+        return render_template('errores/errores.html', lista=datosDeVentas)
+    posicionDeCliente = funciones.posicionDelDato('CLIENTE')
+    posicionDePrecio = funciones.posicionDelDato('PRECIO')
+    posicionDeCantidad = funciones.posicionDelDato('CANTIDAD')
+    posicionDeCodigo = funciones.posicionDelDato('CODIGO')
+    validaciones = funciones.validaciones(datosDeVentas, posicionDePrecio, posicionDeCantidad, posicionDeCodigo)
+    if len(validaciones):
+        return render_template('errores/errores.html', lista=validaciones)
+    return render_template('lista_completa.html', ventas=datosDeVentas)
 
 @app.route('/productosxcliente', methods=['GET', 'POST'])
 def formBusquedaCliente():
@@ -126,6 +136,7 @@ def mejoresCliente():
     datosDeVentas = funciones.lecturaDeVentas()
     if len(datosDeVentas) == 1:
         return render_template('errores/errores.html', lista=datosDeVentas)
+    
     posicionDeCliente = funciones.posicionDelDato('CLIENTE')
     posicionDePrecio = funciones.posicionDelDato('PRECIO')
     posicionDeCantidad = funciones.posicionDelDato('CANTIDAD')
@@ -137,6 +148,32 @@ def mejoresCliente():
         sumaDePrecios = funciones.clientesQueMasCompraron(datosDeVentas, posicionDeCliente, posicionDePrecio)
         tablaCompleta = funciones.ordenarTablaDescendente(sumaDePrecios, 'CLIENTE', 'PRECIO')
         return render_template('mejores-clientes/mejores-clientes.html', tabla=tablaCompleta)
+
+@app.route('/ingresardatos', methods=['GET', 'POST'])
+def ingresarDatos():
+    datosDeVentas = funciones.lecturaDeVentas()
+    formulario = ingresarDatosForm()
+    if len(datosDeVentas) == 1:
+        return render_template('errores/errores.html', lista=datosDeVentas)
+    
+    posicionDeCliente = funciones.posicionDelDato('CLIENTE')
+    posicionDePrecio = funciones.posicionDelDato('PRECIO')
+    posicionDeCantidad = funciones.posicionDelDato('CANTIDAD')
+    posicionDeCodigo = funciones.posicionDelDato('CODIGO')
+    validaciones = funciones.validaciones(datosDeVentas, posicionDePrecio, posicionDeCantidad, posicionDeCodigo)
+    if len(validaciones):
+        return render_template('errores/errores.html', lista=validaciones)
+
+    if formulario.validate_on_submit():
+        datoDeProducto = formulario.producto.data.upper()
+        datoDeCliente = formulario.cliente.data.upper()
+        datoDePrecio = formulario.precio.data
+        datoDeCantidad = formulario.cantidad.data
+        datoDeCodigo = formulario.codigo.data.upper()
+        ingreso = funciones.agregarVenta(datosDeVentas, datoDeCliente, datoDeProducto, datoDeCodigo, datoDeCantidad, datoDePrecio)
+        if(ingreso):
+            return render_template('formulario-ingresar-datos.html', form=formulario, mensaje=ingreso)
+    return render_template('formulario-ingresar-datos.html', form=formulario)    
 
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', debug=True)

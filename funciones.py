@@ -157,3 +157,28 @@ def validaciones(datosDeVenta, posicionDePrecio, posicionDeCantidad, posionDeCod
             cont = cont + 1
         fila = fila + 1
     return errores
+
+def agregarVenta(listaVentas, cliente, producto, codigo, cantidad, precio):
+    datosAIngresar = []
+    
+    for titulos in listaVentas[:1]:
+        for titulo in titulos:
+            if titulo == 'PRODUCTO':
+                datosAIngresar.append(producto)
+            elif titulo == 'CLIENTE':
+                datosAIngresar.append(cliente)
+            elif titulo == 'CANTIDAD':
+                datosAIngresar.append(str(cantidad))
+            elif titulo == 'PRECIO':
+                datosAIngresar.append(str(precio))
+            elif titulo == 'CODIGO':
+                datosAIngresar.append(codigo)
+    
+    data = ','.join(datosAIngresar)
+
+    try:
+        with open('examen.csv', 'a') as archivo:
+            archivo.write("\n{}".format(data))
+        return True
+    except:
+        return False
